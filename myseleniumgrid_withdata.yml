@@ -1,0 +1,60 @@
+version: "3"
+services:
+  HubService:
+    image: selenium/hub:4.23.1-20240813
+    container_name: seleniumHub
+    ports:
+      - "3000:4444"
+      - "4442:4442"
+      - "4443:4443"
+
+  ChromeService:
+    image: selenium/node-chrome:4.23.1-20240813
+    shm_size: 2gb
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_VNC_NO_PASSWORD=1
+    depends_on:
+      - HubService
+
+  FirefoxService:
+    image: selenium/node-firefox:4.23.1-20240813
+    shm_size: 2gb
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_VNC_NO_PASSWORD=1
+    depends_on:
+      - HubService
+
+  EdgeService:
+    image: selenium/node-edge:4.23.1-20240813
+    shm_size: 2gb
+    environment:
+      - SE_EVENT_BUS_HOST=seleniumHub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_SESSIONS=2
+      - SE_VNC_NO_PASSWORD=1
+    depends_on:
+      - HubService
+
+  MavenTestService:
+    image: padminikadhir/myselgridwithdata
+    container_name: mavenTestRunner
+    build: .
+    environment:
+      - EXCEL_FILE_PATH=/data/userlogindata.xlsx
+    volumes:
+      - "D:/Docker_Practice/Docker_SeleniumGrid/docker_seleniumgrid_withdata/data/userlogindata.xlsx:/data/userlogindata.xlsx"
+    command: ["mvn", "test"]
+    depends_on:
+      - HubService
+      - ChromeService
+      - FirefoxService
+      - EdgeService
