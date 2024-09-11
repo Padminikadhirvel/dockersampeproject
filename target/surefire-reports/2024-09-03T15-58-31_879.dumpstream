@@ -1,0 +1,4 @@
+# Created at 2024-09-03T15:58:33.426
+Boot Manifest-JAR contains absolute paths in classpath 'D:\Docker_Practice\Docker_SeleniumGrid\docker_seleniumgrid_plreport\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+
